@@ -7,7 +7,7 @@ module "naming" {
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   groups = {
     demo = {
@@ -19,7 +19,7 @@ module "rg" {
 
 module "db_workspace" {
   source  = "cloudnationhq/dbw/azure"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
   workspace = {
     name           = module.naming.databricks_workspace.name
