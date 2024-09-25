@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v1.0.0...v2.0.0) (2024-09-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* * Version 4 of the azurerm provider includes breaking changes.
+
+### Features
+
+* upgrade azurerm provider to v4 ([#3](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/3)) ([dcc98fb](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/dcc98fbf90527b1c459f9cedb660c51c7fc6e9cb))
+
 ## 1.0.0 (2024-09-05)
 
 
