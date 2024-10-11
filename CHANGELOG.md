@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.0.0...v2.1.0) (2024-10-11)
+
+
+### Features
+
+* auto generated docs and refine makefile ([#6](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/6)) ([0bd991a](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/0bd991ad7c42ce739a371c78b922538e617378fc))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#5](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/5)) ([ff8e5e6](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/ff8e5e6d0c1ed763e041c2ec1cfce221d48325b1))
+
 ## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v1.0.0...v2.0.0) (2024-09-25)
 
 
