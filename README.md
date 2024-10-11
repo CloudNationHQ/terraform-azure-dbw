@@ -24,50 +24,53 @@ End-to-end testing is not conducted on these modules, as they are individual com
 
 ## Features
 
-- offers support for private and public databricks workspace 
+- offers support for private and public databricks workspace
 - utilization of terratest for robust validation.
 - supports optional custom parameters for vnet injection (bring your own VNET).
 - supports optional custom parameters for dbfs storage account name and sku.
-- integrates with access connector and user-assigned identity in case default storage firewall is set to enabled 
+- integrates with access connector and user-assigned identity in case default storage firewall is set to enabled
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 3.114 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 3.114 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
 
 ## Resources
 
 | Name | Type |
-| :-- | :-- |
-| [azurerm_databricks_workspace](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) | resource |
-| [azurerm_databricks_access_connector](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) | resource |
-| [azurerm_user_assigned_identity](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+|------|------|
+| [azurerm_databricks_access_connector.dbac](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) | resource |
+| [azurerm_databricks_workspace.dbw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) | resource |
+| [azurerm_user_assigned_identity.uami](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 
 ## Inputs
 
-| Name | Description | Type | Required |
-| :-- | :-- | :-- | :-- |
-| `workspace` | describes databricks workspace related configuration | object | yes |
-| `access_connector` | describes databricks access connector related configuration | object | no |
-| `location` | default azure region to be used | string | no |
-| `resource_group` | default resource group to be used | string | no |
-| `tags` | tags to be added to the resources | map(string) | no |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_access_connector"></a> [access\_connector](#input\_access\_connector) | databricks access connector configuration | `any` | `{}` | no |
+| <a name="input_location"></a> [location](#input\_location) | default azure region to be used. | `string` | `null` | no |
+| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | default resource group to be used. | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | tags to be added to the resources | `map(string)` | `{}` | no |
+| <a name="input_workspace"></a> [workspace](#input\_workspace) | databricks workspace configuration | `any` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
-| :-- | :-- |
-| `workspace` | contains the databricks workspace details |
-| `access_connector` | contains the databricks access connector details |
-| `identity` | user-asssigned identity configuration specifics |
+|------|-------------|
+| <a name="output_access_connector"></a> [access\_connector](#output\_access\_connector) | n/a |
+| <a name="output_identity"></a> [identity](#output\_identity) | n/a |
+| <a name="output_workspace"></a> [workspace](#output\_workspace) | n/a |
+<!-- END_TF_DOCS -->
 
 ## Testing
 
