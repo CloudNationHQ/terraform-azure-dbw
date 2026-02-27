@@ -33,43 +33,89 @@ End-to-end testing is not conducted on these modules, as they are individual com
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6 |
+The following requirements are needed by this module:
+
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
+
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
+The following providers are used by this module:
+
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [azurerm_databricks_access_connector.dbac](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) | resource |
-| [azurerm_databricks_workspace.dbw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) | resource |
-| [azurerm_user_assigned_identity.uami](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
+The following resources are used by this module:
 
-## Inputs
+- [azurerm_databricks_access_connector.dbac](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) (resource)
+- [azurerm_databricks_workspace.dbw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) (resource)
+- [azurerm_user_assigned_identity.uami](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_access_connector"></a> [access\_connector](#input\_access\_connector) | databricks access connector configuration | `any` | `{}` | no |
-| <a name="input_location"></a> [location](#input\_location) | default azure region to be used. | `string` | `null` | no |
-| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | default resource group to be used. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | tags to be added to the resources | `map(string)` | `{}` | no |
-| <a name="input_workspace"></a> [workspace](#input\_workspace) | databricks workspace configuration | `any` | n/a | yes |
+## Required Inputs
+
+The following input variables are required:
+
+### <a name="input_workspace"></a> [workspace](#input\_workspace)
+
+Description: databricks workspace configuration
+
+Type: `any`
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### <a name="input_access_connector"></a> [access\_connector](#input\_access\_connector)
+
+Description: databricks access connector configuration
+
+Type: `any`
+
+Default: `{}`
+
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: default azure region to be used.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group)
+
+Description: default resource group to be used.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_tags"></a> [tags](#input\_tags)
+
+Description: tags to be added to the resources
+
+Type: `map(string)`
+
+Default: `{}`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_access_connector"></a> [access\_connector](#output\_access\_connector) | n/a |
-| <a name="output_identity"></a> [identity](#output\_identity) | n/a |
-| <a name="output_workspace"></a> [workspace](#output\_workspace) | n/a |
+The following outputs are exported:
+
+### <a name="output_access_connector"></a> [access\_connector](#output\_access\_connector)
+
+Description: n/a
+
+### <a name="output_identity"></a> [identity](#output\_identity)
+
+Description: n/a
+
+### <a name="output_workspace"></a> [workspace](#output\_workspace)
+
+Description: n/a
 <!-- END_TF_DOCS -->
 
 ## Testing
