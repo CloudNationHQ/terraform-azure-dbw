@@ -20,7 +20,7 @@ resource "azurerm_databricks_workspace" "dbw" {
   managed_disk_cmk_rotation_to_latest_version_enabled = try(var.workspace.managed_disk_cmk_rotation_to_latest_version_enabled, null)
 
   dynamic "custom_parameters" {
-    for_each = try(var.workspace.custom_parameters, {}) != {} ? { "default" = var.workspace.custom_parameters } : {}
+    for_each = length(try(keys(var.workspace.custom_parameters), [])) > 0 ? { "default" = var.workspace.custom_parameters } : {}
     content {
       machine_learning_workspace_id = try(custom_parameters.value.machine_learning_workspace_id, null)
       nat_gateway_name              = try(custom_parameters.value.nat_gateway_name, null)
@@ -40,7 +40,7 @@ resource "azurerm_databricks_workspace" "dbw" {
   }
 
   dynamic "enhanced_security_compliance" {
-    for_each = try(var.workspace.enhanced_security_compliance, {}) != {} ? { "default" = var.workspace.enhanced_security_compliance } : {}
+    for_each = length(try(keys(var.workspace.enhanced_security_compliance), [])) > 0 ? { "default" = var.workspace.enhanced_security_compliance } : {}
     content {
       automatic_cluster_update_enabled      = try(enhanced_security_compliance.value.automatic_cluster_update_enabled, false)
       compliance_security_profile_enabled   = try(enhanced_security_compliance.value.compliance_security_profile_enabled, false)
@@ -53,14 +53,14 @@ resource "azurerm_databricks_workspace" "dbw" {
 }
 
 resource "azurerm_databricks_access_connector" "dbac" {
-  for_each = try(var.access_connector, {}) != {} ? { "default" = var.access_connector } : {}
+  for_each = length(try(keys(var.access_connector), [])) > 0 ? { "default" = var.access_connector } : {}
 
   name                = var.access_connector.name
   resource_group_name = coalesce(lookup(var.access_connector, "resource_group", null), var.resource_group)
   location            = coalesce(lookup(var.access_connector, "location", null), var.location)
 
   dynamic "identity" {
-    for_each = try(var.access_connector.identity, null) != null ? { "default" = var.access_connector.identity } : {}
+    for_each = length(try(keys(var.access_connector.identity), [])) > 0 ? { "default" = var.access_connector.identity } : {}
     content {
       type         = identity.value.type
       identity_ids = identity.value.type == "UserAssigned" ? concat(try(identity.value.identity_ids, []), try([azurerm_user_assigned_identity.uami["default"].id], [])) : null
