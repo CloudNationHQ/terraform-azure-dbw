@@ -39,6 +39,16 @@ resource "azurerm_databricks_workspace" "dbw" {
     }
   }
 
+  dynamic "enhanced_security_compliance" {
+    for_each = try(var.workspace.enhanced_security_compliance, {}) != {} ? { "default" = var.workspace.enhanced_security_compliance } : {}
+    content {
+      automatic_cluster_update_enabled      = try(enhanced_security_compliance.value.automatic_cluster_update_enabled, false)
+      compliance_security_profile_enabled   = try(enhanced_security_compliance.value.compliance_security_profile_enabled, false)
+      compliance_security_profile_standards = try(enhanced_security_compliance.value.compliance_security_profile_standards, null)
+      enhanced_security_monitoring_enabled  = try(enhanced_security_compliance.value.enhanced_security_monitoring_enabled, false)
+    }
+  }
+
   tags = try(var.workspace.tags, var.tags, null)
 }
 
