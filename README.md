@@ -8,7 +8,9 @@ This terraform module simplifies the process of creating and managing a databric
 - utilization of terratest for robust validation.
 - supports optional custom parameters for vnet injection (bring your own VNET).
 - supports optional custom parameters for dbfs storage account name and sku.
-- integrates with access connector and user-assigned identity in case default storage firewall is set to enabled
+- integrates with databricks access connector identity configuration in case default storage firewall is set to enabled
+- supports optional databricks virtual network peering resources
+- supports optional root dbfs customer managed key configuration
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -25,15 +27,16 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (4.62.0)
 
 ## Resources
 
 The following resources are used by this module:
 
-- [azurerm_databricks_access_connector.dbac](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) (resource)
-- [azurerm_databricks_workspace.dbw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) (resource)
-- [azurerm_user_assigned_identity.uami](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
+- [azurerm_databricks_access_connector.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_access_connector) (resource)
+- [azurerm_databricks_virtual_network_peering.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_virtual_network_peering) (resource)
+- [azurerm_databricks_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) (resource)
+- [azurerm_databricks_workspace_root_dbfs_customer_managed_key.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace_root_dbfs_customer_managed_key) (resource)
 
 ## Required Inputs
 
@@ -43,7 +46,56 @@ The following input variables are required:
 
 Description: databricks workspace configuration
 
-Type: `any`
+Type:
+
+```hcl
+object({
+    name                        = string
+    resource_group_name         = optional(string)
+    location                    = optional(string)
+    managed_resource_group_name = optional(string)
+    sku                         = string
+
+    load_balancer_backend_address_pool_id = optional(string)
+    public_network_access_enabled         = optional(bool, true)
+    network_security_group_rules_required = optional(string)
+    default_storage_firewall_enabled      = optional(bool, false)
+
+    customer_managed_key_enabled                        = optional(bool, false)
+    infrastructure_encryption_enabled                   = optional(bool, false)
+    managed_services_cmk_key_vault_id                   = optional(string)
+    managed_services_cmk_key_vault_key_id               = optional(string)
+    managed_disk_cmk_key_vault_id                       = optional(string)
+    managed_disk_cmk_key_vault_key_id                   = optional(string)
+    managed_disk_cmk_rotation_to_latest_version_enabled = optional(bool)
+
+    custom_parameters = optional(object({
+      machine_learning_workspace_id = optional(string)
+      nat_gateway_name              = optional(string, "nat-gateway")
+      public_ip_name                = optional(string, "nat-gw-public-ip")
+      no_public_ip                  = optional(bool, true)
+
+      virtual_network_id                                   = optional(string)
+      public_subnet_name                                   = optional(string)
+      public_subnet_network_security_group_association_id  = optional(string)
+      private_subnet_name                                  = optional(string)
+      private_subnet_network_security_group_association_id = optional(string)
+      vnet_address_prefix                                  = optional(string, "10.139")
+
+      storage_account_name     = optional(string)
+      storage_account_sku_name = optional(string, "Standard_GRS")
+    }))
+
+    enhanced_security_compliance = optional(object({
+      automatic_cluster_update_enabled      = optional(bool, false)
+      compliance_security_profile_enabled   = optional(bool, false)
+      compliance_security_profile_standards = optional(list(string), [])
+      enhanced_security_monitoring_enabled  = optional(bool, false)
+    }))
+
+    tags = optional(map(string))
+  })
+```
 
 ## Optional Inputs
 
@@ -53,9 +105,22 @@ The following input variables are optional (have default values):
 
 Description: databricks access connector configuration
 
-Type: `any`
+Type:
 
-Default: `{}`
+```hcl
+object({
+    name                = string
+    resource_group_name = optional(string)
+    location            = optional(string)
+    identity = optional(object({
+      type         = string
+      identity_ids = optional(list(string))
+    }))
+    tags = optional(map(string))
+  })
+```
+
+Default: `null`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
@@ -65,9 +130,9 @@ Type: `string`
 
 Default: `null`
 
-### <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group)
+### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
-Description: default resource group to be used.
+Description: default resource group name to be used.
 
 Type: `string`
 
@@ -81,6 +146,42 @@ Type: `map(string)`
 
 Default: `{}`
 
+### <a name="input_virtual_network_peerings"></a> [virtual\_network\_peerings](#input\_virtual\_network\_peerings)
+
+Description: databricks virtual network peering configuration
+
+Type:
+
+```hcl
+map(object({
+    name                          = optional(string)
+    resource_group_name           = optional(string)
+    remote_address_space_prefixes = list(string)
+    remote_virtual_network_id     = string
+    allow_virtual_network_access  = optional(bool, true)
+    allow_forwarded_traffic       = optional(bool, false)
+    allow_gateway_transit         = optional(bool, false)
+    use_remote_gateways           = optional(bool, false)
+  }))
+```
+
+Default: `{}`
+
+### <a name="input_workspace_root_dbfs_customer_managed_key"></a> [workspace\_root\_dbfs\_customer\_managed\_key](#input\_workspace\_root\_dbfs\_customer\_managed\_key)
+
+Description: root dbfs customer managed key configuration
+
+Type:
+
+```hcl
+object({
+    key_vault_key_id = string
+    key_vault_id     = optional(string)
+  })
+```
+
+Default: `null`
+
 ## Outputs
 
 The following outputs are exported:
@@ -93,7 +194,15 @@ Description: n/a
 
 Description: n/a
 
+### <a name="output_virtual_network_peerings"></a> [virtual\_network\_peerings](#output\_virtual\_network\_peerings)
+
+Description: n/a
+
 ### <a name="output_workspace"></a> [workspace](#output\_workspace)
+
+Description: n/a
+
+### <a name="output_workspace_root_dbfs_customer_managed_key"></a> [workspace\_root\_dbfs\_customer\_managed\_key](#output\_workspace\_root\_dbfs\_customer\_managed\_key)
 
 Description: n/a
 <!-- END_TF_DOCS -->
