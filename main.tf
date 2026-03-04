@@ -1,7 +1,14 @@
 resource "azurerm_databricks_workspace" "this" {
-  name                        = var.workspace.name
-  resource_group_name         = coalesce(var.workspace.resource_group_name, var.resource_group_name)
-  location                    = coalesce(var.workspace.location, var.location)
+  name = var.workspace.name
+  resource_group_name = coalesce(
+    lookup(
+      var.workspace, "resource_group_name", null
+    ), var.resource_group_name
+  )
+  location = coalesce(
+    lookup(var.workspace, "location", null
+    ), var.location
+  )
   managed_resource_group_name = var.workspace.managed_resource_group_name
   sku                         = var.workspace.sku
 
@@ -55,9 +62,13 @@ resource "azurerm_databricks_workspace" "this" {
 resource "azurerm_databricks_access_connector" "this" {
   for_each = var.access_connector != null ? { "default" = var.access_connector } : {}
 
-  name                = each.value.name
-  resource_group_name = coalesce(each.value.resource_group_name, var.resource_group_name)
-  location            = coalesce(each.value.location, var.location)
+  name = each.value.name
+  resource_group_name = coalesce(
+    lookup(each.value, "resource_group_name", null), var.resource_group_name
+  )
+  location = coalesce(
+    lookup(each.value, "location", null), var.location
+  )
 
   dynamic "identity" {
     for_each = each.value.identity == null ? [] : [each.value.identity]
@@ -73,9 +84,13 @@ resource "azurerm_databricks_access_connector" "this" {
 resource "azurerm_databricks_virtual_network_peering" "this" {
   for_each = var.virtual_network_peerings
 
-  name                = coalesce(each.value.name, each.key)
-  resource_group_name = coalesce(each.value.resource_group_name, var.workspace.resource_group_name, var.resource_group_name)
-  workspace_id        = azurerm_databricks_workspace.this.id
+  name = coalesce(each.value.name, each.key)
+  resource_group_name = coalesce(
+    lookup(each.value, "resource_group_name", null),
+    lookup(var.workspace, "resource_group_name", null),
+    var.resource_group_name
+  )
+  workspace_id = azurerm_databricks_workspace.this.id
 
   remote_address_space_prefixes = each.value.remote_address_space_prefixes
   remote_virtual_network_id     = each.value.remote_virtual_network_id
