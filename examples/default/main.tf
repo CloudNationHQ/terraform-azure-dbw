@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.26"
 
   suffix = ["demo", "defa"]
 }
@@ -19,12 +19,12 @@ module "rg" {
 
 module "db_workspace" {
   source  = "cloudnationhq/dbw/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   workspace = {
-    name           = module.naming.databricks_workspace.name
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
-    sku            = "premium"
+    name                = module.naming.databricks_workspace.name
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
+    sku                 = "premium"
   }
 }

@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.26"
 
   suffix = ["demo", "dev"]
 }
@@ -19,20 +19,20 @@ module "rg" {
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 4.0"
+  version = "~> 9.0"
 
   naming = local.naming
 
   vnet = {
-    name           = module.naming.virtual_network.name
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
-    cidr           = ["10.0.0.0/16"]
+    name                = module.naming.virtual_network.name
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
+    address_space       = ["10.0.0.0/16"]
 
     subnets = {
       public = {
-        cidr = ["10.0.1.0/24"]
-        nsg  = {}
+        address_prefixes       = ["10.0.1.0/24"]
+        network_security_group = {}
         delegations = {
           databricks = {
             name = "Microsoft.Databricks/workspaces"
@@ -45,8 +45,8 @@ module "network" {
         }
       }
       private = {
-        cidr = ["10.0.2.0/24"]
-        nsg  = {}
+        address_prefixes       = ["10.0.2.0/24"]
+        network_security_group = {}
         delegations = {
           databricks = {
             name = "Microsoft.Databricks/workspaces"
@@ -62,14 +62,25 @@ module "network" {
   }
 }
 
+module "identity" {
+  source  = "cloudnationhq/uai/azure"
+  version = "~> 2.0"
+
+  config = {
+    name                = module.naming.user_assigned_identity.name
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
+  }
+}
+
 module "db_workspace" {
   source  = "cloudnationhq/dbw/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   workspace = {
     name                        = module.naming.databricks_workspace.name_unique
     location                    = module.rg.groups.demo.location
-    resource_group              = module.rg.groups.demo.name
+    resource_group_name         = module.rg.groups.demo.name
     sku                         = "premium"
     managed_resource_group_name = "${module.naming.databricks_workspace.name_unique}-managed"
 
@@ -99,13 +110,24 @@ module "db_workspace" {
   }
 
   access_connector = {
-    name           = "dbw-ac"
-    resource_group = module.rg.groups.demo.name
-    location       = module.rg.groups.demo.location
+    name                = "dbw-ac"
+    resource_group_name = module.rg.groups.demo.name
+    location            = module.rg.groups.demo.location
     identity = {
-      type = "UserAssigned"
+      type         = "UserAssigned"
+      identity_ids = [module.identity.config.id]
     }
   }
 
-  depends_on = [module.network]
+  # Optional:
+  # virtual_network_peerings = {
+  #   example = {
+  #     remote_address_space_prefixes = module.network.vnet.address_space
+  #     remote_virtual_network_id     = module.network.vnet.id
+  #   }
+  # }
+  #
+  # workspace_root_dbfs_customer_managed_key = {
+  #   key_vault_key_id = module.kv.keys.demo.id
+  # }
 }
