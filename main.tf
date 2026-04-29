@@ -1,71 +1,118 @@
-resource "azurerm_databricks_workspace" "dbw" {
-  name                        = var.workspace.name
-  resource_group_name         = coalesce(lookup(var.workspace, "resource_group", null), var.resource_group)
-  location                    = coalesce(lookup(var.workspace, "location", null), var.location)
-  managed_resource_group_name = try(var.workspace.managed_resource_group_name, null)
+resource "azurerm_databricks_workspace" "this" {
+  name = var.workspace.name
+  resource_group_name = coalesce(
+    lookup(
+      var.workspace, "resource_group_name", null
+    ), var.resource_group_name
+  )
+  location = coalesce(
+    lookup(var.workspace, "location", null
+    ), var.location
+  )
+  managed_resource_group_name = var.workspace.managed_resource_group_name
   sku                         = var.workspace.sku
 
-  load_balancer_backend_address_pool_id = try(var.workspace.load_balancer_backend_address_pool_id, null)
-  public_network_access_enabled         = try(var.workspace.public_network_access_enabled, true)
-  network_security_group_rules_required = try(var.workspace.public_network_access_enabled, true) == false ? var.workspace.network_security_group_rules_required : null
-  default_storage_firewall_enabled      = try(var.workspace.default_storage_firewall_enabled, null)
-  access_connector_id                   = try(var.workspace.default_storage_firewall_enabled, false) == true ? azurerm_databricks_access_connector.dbac["default"].id : null
+  load_balancer_backend_address_pool_id = var.workspace.load_balancer_backend_address_pool_id
+  public_network_access_enabled         = var.workspace.public_network_access_enabled
+  network_security_group_rules_required = var.workspace.public_network_access_enabled == false ? var.workspace.network_security_group_rules_required : null
+  default_storage_firewall_enabled      = var.workspace.default_storage_firewall_enabled == true ? true : null
+  access_connector_id                   = var.workspace.default_storage_firewall_enabled == true ? azurerm_databricks_access_connector.this["default"].id : null
 
-  customer_managed_key_enabled                        = try(var.workspace.customer_managed_key_enabled, false)
-  infrastructure_encryption_enabled                   = try(var.workspace.infrastructure_encryption_enabled, false)
-  managed_services_cmk_key_vault_id                   = try(var.workspace.managed_services_cmk_key_vault_id, null)
-  managed_services_cmk_key_vault_key_id               = try(var.workspace.managed_services_cmk_key_vault_key_id, null)
-  managed_disk_cmk_key_vault_id                       = try(var.workspace.managed_disk_cmk_key_vault_id, null)
-  managed_disk_cmk_key_vault_key_id                   = try(var.workspace.managed_disk_cmk_key_vault_key_id, null)
-  managed_disk_cmk_rotation_to_latest_version_enabled = try(var.workspace.managed_disk_cmk_rotation_to_latest_version_enabled, null)
+  customer_managed_key_enabled                        = var.workspace.customer_managed_key_enabled
+  infrastructure_encryption_enabled                   = var.workspace.infrastructure_encryption_enabled
+  managed_services_cmk_key_vault_id                   = var.workspace.managed_services_cmk_key_vault_id
+  managed_services_cmk_key_vault_key_id               = var.workspace.managed_services_cmk_key_vault_key_id
+  managed_disk_cmk_key_vault_id                       = var.workspace.managed_disk_cmk_key_vault_id
+  managed_disk_cmk_key_vault_key_id                   = var.workspace.managed_disk_cmk_key_vault_key_id
+  managed_disk_cmk_rotation_to_latest_version_enabled = var.workspace.managed_disk_cmk_rotation_to_latest_version_enabled
 
   dynamic "custom_parameters" {
-    for_each = try(var.workspace.custom_parameters, {}) != {} ? { "default" = var.workspace.custom_parameters } : {}
+    for_each = var.workspace.custom_parameters == null ? {} : { "default" = var.workspace.custom_parameters }
     content {
-      machine_learning_workspace_id = try(custom_parameters.value.machine_learning_workspace_id, null)
-      nat_gateway_name              = try(custom_parameters.value.nat_gateway_name, null)
-      public_ip_name                = try(custom_parameters.value.public_ip_name, "nat-gw-public-ip")
-      no_public_ip                  = try(custom_parameters.value.no_public_ip, true)
+      machine_learning_workspace_id = custom_parameters.value.machine_learning_workspace_id
+      nat_gateway_name              = custom_parameters.value.nat_gateway_name
+      public_ip_name                = custom_parameters.value.public_ip_name
+      no_public_ip                  = custom_parameters.value.no_public_ip
 
-      virtual_network_id                                   = try(custom_parameters.value.virtual_network_id, null)
-      public_subnet_name                                   = try(custom_parameters.value.virtual_network_id, null) != null ? custom_parameters.value.public_subnet_name : null
-      public_subnet_network_security_group_association_id  = try(custom_parameters.value.virtual_network_id, null) != null ? custom_parameters.value.public_subnet_network_security_group_association_id : null
-      private_subnet_name                                  = try(custom_parameters.value.virtual_network_id, null) != null ? custom_parameters.value.private_subnet_name : null
-      private_subnet_network_security_group_association_id = try(custom_parameters.value.virtual_network_id, null) != null ? custom_parameters.value.private_subnet_network_security_group_association_id : null
-      vnet_address_prefix                                  = try(custom_parameters.value.vnet_address_prefix, "10.139")
+      virtual_network_id                                   = custom_parameters.value.virtual_network_id
+      public_subnet_name                                   = custom_parameters.value.virtual_network_id != null ? custom_parameters.value.public_subnet_name : null
+      public_subnet_network_security_group_association_id  = custom_parameters.value.virtual_network_id != null ? custom_parameters.value.public_subnet_network_security_group_association_id : null
+      private_subnet_name                                  = custom_parameters.value.virtual_network_id != null ? custom_parameters.value.private_subnet_name : null
+      private_subnet_network_security_group_association_id = custom_parameters.value.virtual_network_id != null ? custom_parameters.value.private_subnet_network_security_group_association_id : null
+      vnet_address_prefix                                  = custom_parameters.value.vnet_address_prefix
 
-      storage_account_name     = try(custom_parameters.value.storage_account_name, null)
-      storage_account_sku_name = try(custom_parameters.value.storage_account_sku_name, "Standard_GRS")
+      storage_account_name     = custom_parameters.value.storage_account_name
+      storage_account_sku_name = custom_parameters.value.storage_account_sku_name
     }
   }
 
-  tags = try(var.workspace.tags, var.tags, null)
+  dynamic "enhanced_security_compliance" {
+    for_each = var.workspace.enhanced_security_compliance == null ? {} : { "default" = var.workspace.enhanced_security_compliance }
+    content {
+      automatic_cluster_update_enabled      = enhanced_security_compliance.value.automatic_cluster_update_enabled
+      compliance_security_profile_enabled   = enhanced_security_compliance.value.compliance_security_profile_enabled
+      compliance_security_profile_standards = enhanced_security_compliance.value.compliance_security_profile_standards
+      enhanced_security_monitoring_enabled  = enhanced_security_compliance.value.enhanced_security_monitoring_enabled
+    }
+  }
+
+  tags = coalesce(var.workspace.tags, var.tags)
+
+  lifecycle {
+    ignore_changes = [
+      custom_parameters[0].nat_gateway_name,
+      custom_parameters[0].public_ip_name,
+      custom_parameters[0].vnet_address_prefix,
+    ]
+  }
 }
 
-resource "azurerm_databricks_access_connector" "dbac" {
-  for_each = try(var.access_connector, {}) != {} ? { "default" = var.access_connector } : {}
+resource "azurerm_databricks_access_connector" "this" {
+  for_each = var.access_connector != null ? { "default" = var.access_connector } : {}
 
-  name                = var.access_connector.name
-  resource_group_name = coalesce(lookup(var.access_connector, "resource_group", null), var.resource_group)
-  location            = coalesce(lookup(var.access_connector, "location", null), var.location)
+  name = each.value.name
+  resource_group_name = coalesce(
+    lookup(each.value, "resource_group_name", null), var.resource_group_name
+  )
+  location = coalesce(
+    lookup(each.value, "location", null), var.location
+  )
 
   dynamic "identity" {
-    for_each = try(var.access_connector.identity, null) != null ? { "default" = var.access_connector.identity } : {}
+    for_each = each.value.identity == null ? [] : [each.value.identity]
     content {
       type         = identity.value.type
-      identity_ids = identity.value.type == "UserAssigned" ? concat(try(identity.value.identity_ids, []), try([azurerm_user_assigned_identity.uami["default"].id], [])) : null
+      identity_ids = identity.value.identity_ids
     }
   }
 
-  tags = try(var.access_connector.tags, var.tags, null)
+  tags = coalesce(each.value.tags, var.tags)
 }
 
-resource "azurerm_user_assigned_identity" "uami" {
-  for_each = try(var.access_connector.identity, null) != null ? try(var.access_connector.identity.type, null) == "UserAssigned" ? { "default" = var.access_connector.identity } : {} : {}
+resource "azurerm_databricks_virtual_network_peering" "this" {
+  for_each = var.virtual_network_peerings
 
-  name                = try(var.access_connector.identity.name, "uai-${var.workspace.name}")
-  resource_group_name = coalesce(lookup(var.access_connector.identity, "resource_group", null), var.workspace.resource_group, var.resource_group)
-  location            = coalesce(lookup(var.access_connector.identity, "location", null), var.workspace.location, var.location)
+  name = coalesce(each.value.name, each.key)
+  resource_group_name = coalesce(
+    lookup(each.value, "resource_group_name", null),
+    lookup(var.workspace, "resource_group_name", null),
+    var.resource_group_name
+  )
+  workspace_id = azurerm_databricks_workspace.this.id
 
-  tags = try(var.access_connector.identity.tags, var.tags, null)
+  remote_address_space_prefixes = each.value.remote_address_space_prefixes
+  remote_virtual_network_id     = each.value.remote_virtual_network_id
+
+  allow_virtual_network_access = each.value.allow_virtual_network_access
+  allow_forwarded_traffic      = each.value.allow_forwarded_traffic
+  allow_gateway_transit        = each.value.allow_gateway_transit
+  use_remote_gateways          = each.value.use_remote_gateways
+}
+
+resource "azurerm_databricks_workspace_root_dbfs_customer_managed_key" "this" {
+  for_each = var.workspace_root_dbfs_customer_managed_key == null ? {} : { "default" = var.workspace_root_dbfs_customer_managed_key }
+
+  workspace_id     = azurerm_databricks_workspace.this.id
+  key_vault_key_id = each.value.key_vault_key_id
+  key_vault_id     = each.value.key_vault_id
 }

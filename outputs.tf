@@ -1,11 +1,19 @@
 output "workspace" {
-  value = azurerm_databricks_workspace.dbw
+  value = azurerm_databricks_workspace.this
 }
 
 output "access_connector" {
-  value = azurerm_databricks_access_connector.dbac
+  value = azurerm_databricks_access_connector.this
 }
 
 output "identity" {
-  value = azurerm_user_assigned_identity.uami
+  value = try(azurerm_databricks_access_connector.this["default"].identity, null)
+}
+
+output "virtual_network_peerings" {
+  value = azurerm_databricks_virtual_network_peering.this
+}
+
+output "workspace_root_dbfs_customer_managed_key" {
+  value = try(azurerm_databricks_workspace_root_dbfs_customer_managed_key.this["default"], null)
 }

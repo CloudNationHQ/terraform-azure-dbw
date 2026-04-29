@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.1](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.3.0...v2.3.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* simplify resource group lookup in main.tf and clean up example READMEs ([#21](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/21)) ([0c0567e](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/0c0567ef6326a47317745239415fb1c8bcbc053b))
+
+## [2.3.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.2.0...v2.3.0) (2026-03-04)
+
+
+### Features
+
+* type definitions ([#19](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/19)) ([2c4a623](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/2c4a6230e23bf5e37a93545485e9c9848e2215af))
+
 ## [2.2.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.1.0...v2.2.0) (2024-11-11)
 
 
