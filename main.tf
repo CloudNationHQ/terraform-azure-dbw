@@ -57,6 +57,14 @@ resource "azurerm_databricks_workspace" "this" {
   }
 
   tags = coalesce(var.workspace.tags, var.tags)
+
+  lifecycle {
+    ignore_changes = [
+      custom_parameters[0].nat_gateway_name,
+      custom_parameters[0].public_ip_name,
+      custom_parameters[0].vnet_address_prefix,
+    ]
+  }
 }
 
 resource "azurerm_databricks_access_connector" "this" {
