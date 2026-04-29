@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.3.1...v2.4.0) (2026-04-29)
+
+
+### Features
+
+* Add lifecycle ignore for custom_parameters ([#23](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/23)) ([6958038](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/6958038bd9b6b25420b9dfee88f0952e7cd40eca))
+* **deps:** bump golang.org/x/net from 0.23.0 to 0.36.0 in /tests ([#16](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/16)) ([3bc3f62](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/3bc3f626756b820df9fefac5ea1f3d876632d3ac))
+
 ## [2.3.1](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.3.0...v2.3.1) (2026-03-04)
 
 
