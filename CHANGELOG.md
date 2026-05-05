@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.4.0...v2.5.0) (2026-05-05)
+
+
+### Features
+
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#25](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/25)) ([adc4de0](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/adc4de032fb510694f1185be8bcf4ec25e0275b1))
+
 ## [2.4.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.3.1...v2.4.0) (2026-04-29)
 
 
