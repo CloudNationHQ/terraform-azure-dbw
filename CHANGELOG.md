@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.4.0...v3.0.0) (2026-09-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* this change causes recreates
+
+### Features
+
+* azurerm provider 5 upgrade ([#29](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/29)) ([eeaffbe](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/eeaffbe6b3b5c1dc3dc1c49e83c107ead2b500df))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#25](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/25)) ([adc4de0](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/adc4de032fb510694f1185be8bcf4ec25e0275b1))
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /tests ([#27](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/27)) ([526737a](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/526737a0c16b0a880af85a294882fd53414b70e0))
+
 ## [2.4.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.3.1...v2.4.0) (2026-04-29)
 
 
