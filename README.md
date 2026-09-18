@@ -19,15 +19,13 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
-
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 5.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 5.0)
 
 ## Resources
 
@@ -50,49 +48,40 @@ Type:
 
 ```hcl
 object({
-    name                        = string
-    resource_group_name         = optional(string)
-    location                    = optional(string)
-    managed_resource_group_name = optional(string)
-    sku                         = string
-
-    load_balancer_backend_address_pool_id = optional(string)
-    public_network_access_enabled         = optional(bool, true)
-    network_security_group_rules_required = optional(string)
-    default_storage_firewall_enabled      = optional(bool, false)
-
-    customer_managed_key_enabled                        = optional(bool, false)
-    infrastructure_encryption_enabled                   = optional(bool, false)
-    managed_services_cmk_key_vault_id                   = optional(string)
+    name                                                = string
+    resource_group_name                                 = optional(string)
+    location                                            = optional(string)
+    managed_resource_group_name                         = optional(string)
+    sku                                                 = string
+    load_balancer_backend_address_pool_id               = optional(string)
+    public_network_access_enabled                       = optional(bool, true)
+    network_security_group_rules_required               = optional(string)
+    default_storage_firewall_enabled                    = optional(bool, false)
+    customer_managed_key_enabled                        = optional(bool)
+    infrastructure_encryption_enabled                   = optional(bool)
     managed_services_cmk_key_vault_key_id               = optional(string)
-    managed_disk_cmk_key_vault_id                       = optional(string)
     managed_disk_cmk_key_vault_key_id                   = optional(string)
     managed_disk_cmk_rotation_to_latest_version_enabled = optional(bool)
-
     custom_parameters = optional(object({
-      machine_learning_workspace_id = optional(string)
-      nat_gateway_name              = optional(string, "nat-gateway")
-      public_ip_name                = optional(string, "nat-gw-public-ip")
-      no_public_ip                  = optional(bool, true)
-
+      machine_learning_workspace_id                        = optional(string)
+      nat_gateway_name                                     = optional(string)
+      public_ip_name                                       = optional(string)
+      no_public_ip                                         = optional(bool)
       virtual_network_id                                   = optional(string)
       public_subnet_name                                   = optional(string)
       public_subnet_network_security_group_association_id  = optional(string)
       private_subnet_name                                  = optional(string)
       private_subnet_network_security_group_association_id = optional(string)
-      vnet_address_prefix                                  = optional(string, "10.139")
-
-      storage_account_name     = optional(string)
-      storage_account_sku_name = optional(string, "Standard_GRS")
+      vnet_address_prefix                                  = optional(string)
+      storage_account_name                                 = optional(string)
+      storage_account_sku_name                             = optional(string)
     }))
-
     enhanced_security_compliance = optional(object({
-      automatic_cluster_update_enabled      = optional(bool, false)
-      compliance_security_profile_enabled   = optional(bool, false)
+      automatic_cluster_update_enabled      = optional(bool)
+      compliance_security_profile_enabled   = optional(bool)
       compliance_security_profile_standards = optional(list(string), [])
-      enhanced_security_monitoring_enabled  = optional(bool, false)
+      enhanced_security_monitoring_enabled  = optional(bool)
     }))
-
     tags = optional(map(string))
   })
 ```
@@ -158,10 +147,10 @@ map(object({
     resource_group_name           = optional(string)
     remote_address_space_prefixes = list(string)
     remote_virtual_network_id     = string
-    allow_virtual_network_access  = optional(bool, true)
-    allow_forwarded_traffic       = optional(bool, false)
-    allow_gateway_transit         = optional(bool, false)
-    use_remote_gateways           = optional(bool, false)
+    allow_virtual_network_access  = optional(bool)
+    allow_forwarded_traffic       = optional(bool)
+    allow_gateway_transit         = optional(bool)
+    use_remote_gateways           = optional(bool)
   }))
 ```
 
@@ -176,7 +165,6 @@ Type:
 ```hcl
 object({
     key_vault_key_id = string
-    key_vault_id     = optional(string)
   })
 ```
 
@@ -227,11 +215,7 @@ To update the module's documentation run `make doc`
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
-
-<a href="https://github.com/cloudnationhq/terraform-azure-dbw/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=cloudnationhq/terraform-azure-dbw" />
-</a>
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
 
 ## License
 
@@ -241,4 +225,3 @@ MIT Licensed. See [LICENSE](./LICENSE) for full details.
 
 - [Documentation](https://learn.microsoft.com/en-us/azure/databricks)
 - [Rest Api](https://learn.microsoft.com/en-us/rest/api/databricks)
-- [Rest Api Specs](https://github.com/Azure/azure-rest-api-specs/tree/1f449b5a17448f05ce1cd914f8ed75a0b568d130/specification/databricks)

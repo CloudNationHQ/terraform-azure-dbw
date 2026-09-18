@@ -1,13 +1,13 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.26"
+  version = "~> 0.32"
 
   suffix = ["demo", "defa"]
 }
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   groups = {
     demo = {
@@ -19,12 +19,15 @@ module "rg" {
 
 module "db_workspace" {
   source  = "cloudnationhq/dbw/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   workspace = {
-    name                = module.naming.databricks_workspace.name
-    location            = module.rg.groups.demo.location
-    resource_group_name = module.rg.groups.demo.name
-    sku                 = "premium"
+    name                        = module.naming.databricks_workspace.name
+    location                    = module.rg.groups.demo.location
+    resource_group_name         = module.rg.groups.demo.name
+    sku                         = "premium"
+    managed_resource_group_name = "${module.naming.databricks_workspace.name}-managed"
+
+    infrastructure_encryption_enabled = true
   }
 }
