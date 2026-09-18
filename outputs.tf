@@ -7,7 +7,9 @@ output "access_connector" {
 }
 
 output "identity" {
-  value = try(azurerm_databricks_access_connector.this["default"].identity, null)
+  value = try(
+    azurerm_databricks_access_connector.this["this"].identity, null
+  )
 }
 
 output "virtual_network_peerings" {
@@ -15,5 +17,7 @@ output "virtual_network_peerings" {
 }
 
 output "workspace_root_dbfs_customer_managed_key" {
-  value = try(azurerm_databricks_workspace_root_dbfs_customer_managed_key.this["default"], null)
+  value = try(
+    azurerm_databricks_workspace_root_dbfs_customer_managed_key.this["this"], null
+  )
 }
