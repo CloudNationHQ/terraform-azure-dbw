@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v3.0.0...v3.1.0) (2026-10-20)
+
+
+### Features
+
+* **deps:** bump github.com/klauspost/compress in /tests ([#30](https://github.com/CloudNationHQ/terraform-azure-dbw/issues/30)) ([07bca00](https://github.com/CloudNationHQ/terraform-azure-dbw/commit/07bca00237c701d32966ae9600c73cc88187e411))
+
 ## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-dbw/compare/v2.4.0...v3.0.0) (2026-09-18)
 
 
